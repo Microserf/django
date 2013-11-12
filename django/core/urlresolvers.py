@@ -326,9 +326,18 @@ class RegexURLResolver(LocaleRegexProvider):
     @property
     def url_patterns(self):
         patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+        tt = type(patterns)
+        ti = id(patterns)
+        try:
+            td = patterns.__dict__
+        except (AttributeError,) as tie:
+            td = {}
+
+        tk = td.keys()
         try:
             iter(patterns)
-        except TypeError:
+        except (TypeError,) as e:
+            te = e
             raise ImproperlyConfigured("The included urlconf %s doesn't have any patterns in it" % self.urlconf_name)
         return patterns
 
